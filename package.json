@@ -4,13 +4,14 @@
   "description": "blog API project",
   "main": "models.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "N.Ash",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "mocha": "^4.0.1",
     "morgan": "^1.9.0",
     "uuid": "^3.1.0"
   }
