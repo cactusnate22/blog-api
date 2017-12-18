@@ -10,13 +10,37 @@ app.use(morgan('common'));
 //saw in solution...where is /blog-posts?
 app.use('/blog-posts', blogRouter)
 
+let server;
 //not needed unless I need to create a public folder
 // app.use(express.static('public'));
+function runServer() {
+  const port = process.env.PORT || 8080;
+  return new Promise((resolve, reject) => {
+    server = app.listen(port, () => {
+      resolve(server);
+    }).on('error', err => {
+      reject(err)
+    });
+  });
+}
 
+function closeServer() {
+  return new Promise((resolve, reject) => {
+    server.close(err => {
+      if (err) {
+        reject(err);
+        // so we don't also call `resolve()`
+        return;
+      }
+      resolve();
+    });
+  });
+}
 
-//not sure about this...will requests come anywhere but to root?
-//app.use('/', blogRouter);
+// if server.js is called directly (aka, with `node server.js`), this block
+// runs. but we also export the runServer command so other code (for instance, test code) can start the server as needed.
+if (require.main === module) {
+  runServer().catch(err => console.error(err));
+};
 
-app.listen(process.env.PORT || 8080, () => {
-  console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
-});
+module.exports = {app, runServer, closeServer};
