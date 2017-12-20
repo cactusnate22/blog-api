@@ -4,16 +4,18 @@
   "description": "blog API project",
   "main": "models.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -b"
   },
   "author": "N.Ash",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
     "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
     "express": "^4.16.2",
     "mocha": "^4.0.1",
     "morgan": "^1.9.0",
+    "nodemon": "^1.13.3",
     "uuid": "^3.1.0"
   }
 }
