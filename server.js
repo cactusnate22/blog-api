@@ -1,5 +1,16 @@
 const express = require('express');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
+
+// Mongoose internally uses a promise-like object,
+// but its better to make Mongoose use built in es6 promises
+mongoose.Promise = global.Promise;
+
+// config.js is where we control constants for entire
+// app like PORT and DATABASE_URL
+const { PORT, DATABASE_URL } = require('./config');
+const { BlogPost } = require('./models');
+
 
 //is this needed since I only have one router file?
 const blogRouter = require('./routers/blog-posts');
@@ -9,6 +20,25 @@ app.use(morgan('common'));
 
 //saw in solution...where is /blog-posts?
 app.use('/blog-posts', blogRouter)
+
+app.get('/blog-posts/', (req, res) => {
+  const filters = {};
+  const queryableFields = ['title', 'author'];
+  queryableFields.forEach(field => {
+    if (req.query[field]) {
+      filters[field] = req.query[field];
+    }
+  });
+  BlogPost
+  .find(filters)
+  .then(BlogPosts => res.json(
+    BlogPosts.map(blogPost => blogPost.serialize())
+  ))
+  catch(err => {
+    console.error(err);
+    res.status(500).json({message: 'Internal server error'})
+  });
+});
 
 let server;
 //not needed unless I need to create a public folder
@@ -29,7 +59,6 @@ function closeServer() {
     server.close(err => {
       if (err) {
         reject(err);
-        // so we don't also call `resolve()`
         return;
       }
       resolve();
