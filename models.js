@@ -1,6 +1,40 @@
-
+'use strict';
+// is this needed?
 const uuid = require('uuid');
 
+const mongoose = require('mongoose');
+
+//SCHEMA TO REPRESENT ARTICLE
+const articleSchema = mongoose.Schema({
+  title: {type: String, required: true},
+  content: {type: String, required: true},
+  author: {
+    firstName:{type: String, required: true},
+    lastName:{type: String, required: true}
+  },
+  created: {type: Date, default: Date.now}
+});
+
+articleSchema.virtual('authorName').get(function() {
+  return `${this.author.firstName} ${this.author.lastName}`.trim();
+});
+
+articleSchema.methods.serialize = function() {
+  return {
+    id: this._id,
+    author: this.authorName,
+    content: this.content,
+    title: this.title,
+    created: this.created
+  };
+};
+
+const article = mongoose.model('article', articleSchema);
+
+module.exports = {article};
+
+//THIS IS TO BE DELETED/REPLACED ONCE SCHEMA CODE IS WRITTEN
+//--------------------------------------------------------
 // This module provides volatile storage, using a `BlogPost`
 // model. We haven't learned about databases yet, so for now
 // we're using in-memory storage. This means each time the app stops, our storage
@@ -9,7 +43,6 @@ const uuid = require('uuid');
 // Don't worry too much about how BlogPost is implemented.
 // Our concern in this example is with how the API layer
 // is implemented, and getting it to use an existing model.
-
 
 function StorageException(message) {
    this.message = message;
