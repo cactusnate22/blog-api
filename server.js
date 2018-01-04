@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 // Mongoose internally uses a promise-like object,
 // but its better to make Mongoose use built in es6 promises
@@ -13,31 +14,55 @@ const { BlogPost } = require('./models');
 
 
 //is this needed since I only have one router file?
-const blogRouter = require('./routers/blog-posts');
+// const blogRouter = require('./routers/blog-posts');
 const app = express();
 
 app.use(morgan('common'));
+app.use(bodyParser.json());
 
-//saw in solution...where is /blog-posts?
-app.use('/blog-posts', blogRouter)
-
-app.get('/blog-posts/', (req, res) => {
-  const filters = {};
-  const queryableFields = ['title', 'author'];
-  queryableFields.forEach(field => {
-    if (req.query[field]) {
-      filters[field] = req.query[field];
-    }
-  });
+// app.use('/blog-posts', blogRouter)
+app.get('/blog-posts', (req, res) => {
   BlogPost
-  .find(filters)
-  .then(BlogPosts => res.json(
-    BlogPosts.map(blogPost => blogPost.serialize())
-  ))
-  catch(err => {
-    console.error(err);
-    res.status(500).json({message: 'Internal server error'})
-  });
+    .find()
+    .then(posts => {
+      res.json(posts.map(post => post.serialize()));
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'something went wrong' });
+    });
+});
+
+// SET UP FOR QUERYABLE FIELDS
+// app.get('/blog-posts/', (req, res) => {
+//   const filters = {};
+//   const queryableFields = ['title', 'author'];
+//   queryableFields.forEach(field => {
+//     if (req.query[field]) {
+//       filters[field] = req.query[field];
+//     }
+//   });
+//   BlogPost
+//   .find(filters)
+//   .then(BlogPosts => res.json(
+//     BlogPosts.map(blogPost => blogPost.serialize())
+//   ))
+//   catch(err => {
+//     console.error(err);
+//     res.status(500).json({message: 'Internal server error'})
+//   });
+// });
+
+app.get('/blog-posts/:id', (req, res) => {
+  BlogPost
+    // this is a convenience method Mongoose provides for searching
+    // by the object _id property
+    .findById(req.params.id)
+    .then( blogPost => res.json(blogPost.serialize()))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+    });
 });
 
 let server;
