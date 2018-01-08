@@ -4,12 +4,11 @@
   "description": "blog API project",
   "main": "server.js",
   "scripts": {
-    /* "test": "mocha -b" */
+    "test": "mocha -b",
     "start": "node server.js"
   },
-  "author": "N.Ash",
-  "license": "ISC",
-  
+  "author": "Nathan Ash <nash311@gmail.com>",
+
   "dependencies": {
     "body-parser": "^1.18.2",
     "chai": "^4.1.2",
