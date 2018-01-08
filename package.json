@@ -2,12 +2,14 @@
   "name": "blog-api",
   "version": "1.0.0",
   "description": "blog API project",
-  "main": "models.js",
+  "main": "server.js",
   "scripts": {
-    "test": "mocha -b"
+    /* "test": "mocha -b" */
+    "start": "node server.js"
   },
   "author": "N.Ash",
   "license": "ISC",
+  
   "dependencies": {
     "body-parser": "^1.18.2",
     "chai": "^4.1.2",
