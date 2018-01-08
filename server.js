@@ -79,7 +79,7 @@ app.post('/blog-posts', (req, res) => {
         content: req.body.content,
         author: req.body.author
       })
-      .then(article => res.status(201).json(blogPost.serialize()))
+      .then(article => res.status(201).json(article.serialize()))
       .catch(err => {
         console.error(err);
         res.status(500).json({ error: 'Something went wrong' });
