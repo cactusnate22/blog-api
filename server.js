@@ -10,7 +10,7 @@ mongoose.Promise = global.Promise;
 // config.js is where we control constants for entire
 // app like PORT and DATABASE_URL
 const { PORT, DATABASE_URL } = require('./config');
-const { BlogPost } = require('./models');
+const { article } = require('./models');
 
 
 //is this needed since I only have one router file?
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 // app.use('/blog-posts', blogRouter)
 app.get('/blog-posts', (req, res) => {
-  BlogPost
+  article
     .find()
     .then(posts => {
       res.json(posts.map(post => post.serialize()));
@@ -34,7 +34,7 @@ app.get('/blog-posts', (req, res) => {
 });
 
 app.get('/blog-posts/:id', (req, res) => {
-  BlogPost
+  article
     .findById(req.params.id)
     .then(post => res.json(post.serialize()))
     .catch(err => {
@@ -73,7 +73,7 @@ app.post('/blog-posts', (req, res) => {
       return res.status(400).send(message);
     }
   }
-  BlogPost
+  article
       .create({
         title: req.body.title,
         content: req.body.content,
@@ -88,7 +88,7 @@ app.post('/blog-posts', (req, res) => {
   });
 
   app.delete('/blog-posts/:id', (req, res) => {
-  BlogPost
+  article
     .findByIdAndRemove(req.params.id)
     .then(() => {
       res.status(204).json({ message: 'success' });
@@ -101,7 +101,7 @@ app.post('/blog-posts', (req, res) => {
 
 //solution had this additional delete by ID code...why?
 app.delete('/:id', (req, res) => {
-  BlogPost
+  article
     .findByIdAndRemove(req.params.id)
     .then(() => {
       console.log(`Deleted blog post with id \`${req.params.ID}\``);
@@ -124,7 +124,7 @@ app.put('/blog-posts/:id', (req, res) => {
     }
   });
 
-  BlogPost
+  article
     .findByIdAndUpdate(req.params.id, { $set: updated }, { new: true })
     .then(updatedPost => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'Something went wrong' }));
